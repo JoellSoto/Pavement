@@ -7,7 +7,10 @@ import com.Pavement.pavement.records.Case1Record;
 
 public interface AdmissibilityService {
 
-	AdmissibilityRecord addAdmissibility(AdmissibilityRecord admissibility);
+	AdmissibilityRecord createAdmissibility(AdmissibilityRecord admissibility);
+	Case1DTO createAdmissibilitycase1(AdmissibilityRecord admissibilityRecord);
+	AdmissibilityRecord updateAdmissibility(AdmissibilityRecord admissibilityRecord,int admissibilityid);
+	void deleteAdmissibility(int admissibilityid) ;
 	Admissibility getRawInput(int AdmissibilityId);
 	Case1DTO getCase1(Admissibility admissibility);
 }

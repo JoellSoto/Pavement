@@ -32,11 +32,10 @@ public class Admissibility {
 	private int id;
 	
 	@Column
-	private String aircraft;
+	private String aircraft,caseType;
 	
 	@Column
 	private float oem,mrw,pcn,acnM,acnO,movements,area,pavement;
-	
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JsonBackReference(value="admissibility_User")
@@ -123,6 +122,12 @@ public class Admissibility {
 		this.user = user;
 	}
 	
-	
+	public String getCaseType() {
+		return caseType;
+	}
+
+	public void setCaseType(String caseType) {
+		this.caseType = caseType;
+	}
 	
 }
