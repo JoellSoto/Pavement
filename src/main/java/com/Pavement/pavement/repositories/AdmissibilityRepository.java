@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.Pavement.pavement.entities.Admissibility;
@@ -13,7 +14,6 @@ public interface AdmissibilityRepository  extends JpaRepository<Admissibility,In
 
 	Admissibility save(Admissibility admissibility);
 	
-	
-	@Query("select a from Admission a where :user in a.users and a.casetype = :casetype")
-	List<Admissibility> getAdmissibilities();
+	@Query("select a from Admissibility a where a.user.id = :userId and a.caseType = :caseType")
+	List<Admissibility> findAdmissibilities(@Param("userId")int userId, @Param("caseType") String caseType);
 }

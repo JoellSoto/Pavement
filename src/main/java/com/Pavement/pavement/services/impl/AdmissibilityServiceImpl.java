@@ -1,5 +1,6 @@
 package com.Pavement.pavement.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.Pavement.pavement.dto.Case1DTO;
 import com.Pavement.pavement.dto.Case2DTO;
 import com.Pavement.pavement.entities.Admissibility;
+import com.Pavement.pavement.entities.CaseTypes;
 import com.Pavement.pavement.entities.User;
 import com.Pavement.pavement.exceptions.ResourceNotFoundException;
 import com.Pavement.pavement.operations.OperationsCase1;
@@ -52,44 +54,28 @@ public class AdmissibilityServiceImpl implements AdmissibilityService{
 	
 	public Case1DTO createAdmissibilitycase1(AdmissibilityRecord admissibilityRecord) {
 		User currentUser= userRepository.findById(admissibilityRecord.userId()).orElseThrow(()-> new ResourceNotFoundException("User Management",HttpStatus.INTERNAL_SERVER_ERROR.value(),HttpStatus.INTERNAL_SERVER_ERROR.name() , "User Not Found"));
-		Case1DTO case1;
-		
+		Case1DTO case1;		
 		Admissibility admissibility=new Admissibility();
-		admissibility.setAcnM(admissibilityRecord.acnM());
-		admissibility.setAcnO(admissibilityRecord.acnO());
-		admissibility.setAircraft(admissibilityRecord.aircraft());
-		admissibility.setArea(admissibilityRecord.area());
-		admissibility.setUser(currentUser);
-		admissibility.setMovements(admissibilityRecord.movements());
-		admissibility.setMrw(admissibilityRecord.mrw());
-		admissibility.setPavement(admissibilityRecord.pavement());
-		admissibility.setPcn(admissibilityRecord.pcn());
-		admissibility = admissibilityRepository.save(admissibility);
-		
+		admissibility=addAdmissibility(admissibility, admissibilityRecord,currentUser,CaseTypes.Case1.name());
 		case1=getCase1(admissibility);
-		
 		return case1;
 	}
 	
 	
 	public List<Case1DTO> getAllCase1(int userId){
+		List<Admissibility> admissibilities=admissibilityRepository.findAdmissibilities(userId, CaseTypes.Case1.name());
+		List<Case1DTO> listCase1=new ArrayList<Case1DTO>();
 		
+		for (Admissibility admissibility : admissibilities) 
+			listCase1.add(getCase1(admissibility));	
+		return listCase1;
 	}
 	
 
 	public AdmissibilityRecord updateAdmissibility(AdmissibilityRecord admissibilityRecord,int admissibilityid) {
 		Admissibility admissibility=admissibilityRepository.findById(admissibilityid).orElseThrow(()-> new ResourceNotFoundException("Admissibility Update",HttpStatus.INTERNAL_SERVER_ERROR.value(),HttpStatus.INTERNAL_SERVER_ERROR.name() , "Admissibility Not found"));
 		
-		admissibility.setAcnM(admissibilityRecord.acnM());
-		admissibility.setAcnO(admissibilityRecord.acnO());
-		admissibility.setAircraft(admissibilityRecord.aircraft());
-		admissibility.setCaseType(admissibilityRecord.caseType());
-		admissibility.setArea(admissibilityRecord.area());
-		admissibility.setMovements(admissibilityRecord.movements());
-		admissibility.setMrw(admissibilityRecord.mrw());
-		admissibility.setPavement(admissibilityRecord.pavement());
-		admissibility.setPcn(admissibilityRecord.pcn());
-		admissibilityRepository.save(admissibility);
+		addAdmissibility(admissibility,admissibilityRecord, admissibility.getUser(),admissibility.getCaseType());
 		
 		return admissibilityRecord;
 			
@@ -100,7 +86,6 @@ public class AdmissibilityServiceImpl implements AdmissibilityService{
 		admissibilityRepository.deleteById(admissibilityid);
 	}
 
-	
 	
 	public Case1DTO getCase1(Admissibility admissibility) {
 		Case1DTO case1 =new Case1DTO();
@@ -113,7 +98,7 @@ public class AdmissibilityServiceImpl implements AdmissibilityService{
 		}
 		else {
 			case1.setP0(operationsCase1.p0(admissibility.getOem(), admissibility.getMrw(), admissibility.getPcn(), admissibility.getAcnO(), admissibility.getAcnM()));	
-			case1.setNr((int)admissibility.getMovements());		
+			case1.setNr(operationsCase1.nr((int) admissibility.getMovements()));		
 		}
 		return case1;
 		
@@ -140,6 +125,24 @@ public class AdmissibilityServiceImpl implements AdmissibilityService{
 		return case2;
 	}
 	
+	
+	private Admissibility addAdmissibility(Admissibility admissibility, AdmissibilityRecord admissibilityRecord,User currentUser,String CaseType) {
+		
+
+		admissibility.setAcnM(admissibilityRecord.acnM());
+		admissibility.setAcnO(admissibilityRecord.acnO());
+		admissibility.setAircraft(admissibilityRecord.aircraft());
+		admissibility.setArea(admissibilityRecord.area());
+		admissibility.setUser(currentUser);
+		admissibility.setCaseType(CaseTypes.Case1.name());
+		admissibility.setMovements(admissibilityRecord.movements());
+		admissibility.setMrw(admissibilityRecord.mrw());
+		admissibility.setPavement(admissibilityRecord.pavement());
+		admissibility.setPcn(admissibilityRecord.pcn());
+		admissibility = admissibilityRepository.save(admissibility);
+		
+		return admissibility;
+	}
 	
 	public Admissibility getRawInput(int AdmissibilityId) {
 		return admissibilityRepository.findById(AdmissibilityId).orElseThrow(()-> new ResourceNotFoundException("Admissibility Input",HttpStatus.INTERNAL_SERVER_ERROR.value(),HttpStatus.INTERNAL_SERVER_ERROR.name() , "Admissibility input data not found"));

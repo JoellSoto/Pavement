@@ -1,5 +1,7 @@
 package com.Pavement.pavement.services;
 
+import java.util.List;
+
 import com.Pavement.pavement.dto.Case1DTO;
 import com.Pavement.pavement.entities.Admissibility;
 import com.Pavement.pavement.records.AdmissibilityRecord;
@@ -13,4 +15,5 @@ public interface AdmissibilityService {
 	void deleteAdmissibility(int admissibilityid) ;
 	Admissibility getRawInput(int AdmissibilityId);
 	Case1DTO getCase1(Admissibility admissibility);
+	List<Case1DTO> getAllCase1(int userId);
 }

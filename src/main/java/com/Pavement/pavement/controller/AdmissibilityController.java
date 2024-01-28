@@ -1,5 +1,7 @@
 package com.Pavement.pavement.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,5 +37,11 @@ public class AdmissibilityController {
 	public ResponseEntity <Case1DTO>postcreateAdmissibilitycase1(@RequestBody AdmissibilityRecord admissibility) {
 		return ResponseEntity.ok(admissibilityService.createAdmissibilitycase1(admissibility));
 	}
+	
+	@GetMapping("/get-admissibility-case1/{userId}")
+	public List<Case1DTO> getAdmissibilityCase1(@PathVariable("userId") int userId){
+		return admissibilityService.getAllCase1(userId);
+	}
+	
 	
 }

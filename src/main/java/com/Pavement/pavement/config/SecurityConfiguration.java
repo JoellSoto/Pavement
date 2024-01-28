@@ -37,7 +37,7 @@ public class SecurityConfiguration {
 	};
 	
 	private static final String [] userUrls = {
-			"/api/v1/admissibility/*",
+			"/api/v1/admissibility/**",
 			"/api/v1/roles/**",
 			"/api/v1/pavement/Caso1/*",
 			"/api/v1/pavement/Caso2/*"
